@@ -3,7 +3,7 @@ const Product = require("../models/Product");
 const multer = require("multer");
 const path = require("path");
 const Sequelize = require("sequelize");
-const { where , Op ,  } = Sequelize;
+const { where, Op } = Sequelize;
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -24,7 +24,7 @@ const uploadFile = multer({
 
 const getProducts = async (req, res) => {
   try {
-    if(req.query.pageNumber === "all"){
+    if (req.query.pageNumber === "all") {
       const products = await Product.findAll();
       if (products.length === 0) {
         return res.status(404).json({ message: "No products found" });
@@ -41,7 +41,9 @@ const getProducts = async (req, res) => {
     if (products.length === 0) {
       return res.status(404).json({ message: "No products found" });
     }
-    res.status(200).json({products , page , pages: Math.ceil(rows.count / pageSize)});
+    res
+      .status(200)
+      .json({ products, page, pages: Math.ceil(rows.count / pageSize) });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -61,6 +63,7 @@ const getProductById = async (req, res) => {
 
 const createProduct = async (req, res) => {
   try {
+    log("req.body", req.body);
     uploadFile.single("image")(req, res, async (err) => {
       if (err instanceof multer.MulterError) {
         return res.status(500).json({ error: "Multer Error" });
@@ -69,9 +72,18 @@ const createProduct = async (req, res) => {
         return res.status(500).json({ error: "Internal Server Error" });
       }
 
+      log("111",req.body);
+
       const { name, description, price, countInStock, disscount, categoryId } =
         req.body;
-      log(req.body);
+
+      if (!name || !price || !countInStock) {
+        log("222",req.body);
+        return res.status(400).json({
+          message:
+            "Please provide all required fields: name, price, and countInStock",
+        });
+      }
       const imageUrl = req.file ? req.file.filename : null;
       const product = await Product.create({
         name,
@@ -195,7 +207,9 @@ const getProductsByCategory = async (req, res) => {
 
 const getProductsHavingDiscount = async (req, res) => {
   try {
-    const products = await Product.findAll({ where: { discount: { [Sequelize.Op.gt]: 0 } } });
+    const products = await Product.findAll({
+      where: { discount: { [Sequelize.Op.gt]: 0 } },
+    });
     if (products.length === 0) {
       return res.status(404).json({ message: "No products found" });
     }

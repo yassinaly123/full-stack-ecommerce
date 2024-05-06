@@ -12,6 +12,7 @@ const CreateCategory = () => {
     useCreateCategoryMutation();
 
   const handleSubmit = async(e) => {
+    
     e.preventDefault();
     const res = await createCategory({ name, description, imageUrl });
     if (res.error) {

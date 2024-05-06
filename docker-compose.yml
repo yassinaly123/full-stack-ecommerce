@@ -1,0 +1,52 @@
+version: '3'
+services:
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: 1286267066
+      MYSQL_DATABASE: cloud-project
+      MYSQL_PASSWORD: 1286267066
+    ports:
+      - "3307:3306"
+    networks:
+      - app-network
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  backend:
+    build: ./backend
+    ports:
+      - "3020:3020"
+    depends_on:
+      - mysql
+    environment:
+      DATABASE_HOST: mysql
+      DATABASE_NAME: cloud-project
+      PASSWORD: 1286267066
+      DATABASE_PORT: 3307
+      USER: root
+      JWT_SECRET_KEY: tawfik
+      PORT: 3020
+      JWT_SECRET: tawfik_tarek_tawfik
+    restart: always
+    networks:
+      - app-network
+    volumes:
+      - ./backend/uploads:/app/uploads
+
+  frontend:
+    image: sample-project:v1.0 
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+
+volumes:
+  mysql-data:
+
+

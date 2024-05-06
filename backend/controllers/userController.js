@@ -1,5 +1,4 @@
 const User = require("../models/User");
-const bcrypt = require("bcrypt");
 
 const getUsers = async (req, res) => {
   try {
@@ -41,9 +40,7 @@ const createUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   let { name, email, password } = req.body;
-  if (password) {
-    password = await bcrypt.hash(password, 10);
-  }
+
   try {
     const user = await User.findByPk(req.params.id);
     if (user) {

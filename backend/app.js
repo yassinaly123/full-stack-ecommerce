@@ -27,7 +27,7 @@ const Rating = require("./models/Rating");
 
 (async () => {
   try {
-    await sequelize.sync({ force: true }); // set force to true to drop existing tables
+    await sequelize.sync(); // set force to true to drop existing tables
     console.log("Database tables created successfully");
   } catch (error) {
     console.error("Error syncing database:", error);
@@ -41,7 +41,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "http://localhost:3000",
     credentials: true,
   })
 );

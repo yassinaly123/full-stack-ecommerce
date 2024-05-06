@@ -1,6 +1,5 @@
 const User = require("../models/User");
 const { Op } = require("sequelize");
-const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const login = async (req, res) => {
@@ -15,7 +14,7 @@ const login = async (req, res) => {
       return res.status(404).json({ message: "Invalid username or password" });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = (password == user.password)
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid username or password" });
     }
@@ -52,7 +51,6 @@ const login = async (req, res) => {
 
 const signup = async (req, res) => {
   let { username, email, password } = req.body;
-  password = await bcrypt.hash(password, 10);
   try {
     const user = await User.create({ username, email, password });
     res.status(201).json({ message: "Signup successful" });
