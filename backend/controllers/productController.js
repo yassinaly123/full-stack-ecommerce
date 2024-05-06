@@ -31,7 +31,7 @@ const getProducts = async (req, res) => {
       }
       return res.status(200).json(products);
     }
-    const pageSize = 1;
+    const pageSize = 3;
     const page = Number(req.query.pageNumber) || 1;
     const rows = await Product.findAndCountAll({
       limit: pageSize,
